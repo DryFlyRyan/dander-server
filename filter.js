@@ -21,7 +21,9 @@ function filterDogs(responseData, checkID) {
     }
     resolve(returnData);
   }).then(function(data){
-    return onlynewDogs(data)
+
+    if(data[0].userid){
+      return onlynewDogs(data)
   })
 }
 
@@ -54,9 +56,9 @@ module.exports = {
 }
 
 function knexPromise(userID, petID){
-  return new Promise(resolve, reject){
+  return new Promise(function(resolve, reject){
     resolve(crud.checkConnection);
-  }
+  })
 }
 
 function onlyNewDogs(dogArray){
