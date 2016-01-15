@@ -1,5 +1,7 @@
 ***Dander APP***
 
+![Dander Screenshot](/dander-screenshot.png "Dander")
+
 This is the central project page for the Dander app and is also the repo for the server component of the site.
 
 The project can be viewed at [dander.firebaseapp.com](https://dander.firebaseapp.com).
