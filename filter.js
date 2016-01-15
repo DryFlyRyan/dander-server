@@ -1,11 +1,13 @@
+var crud = require('./crud_functions')
 
-function filterDogs(responseData) {
+function filterDogs(responseData, checkID) {
   return new Promise(function(resolve, reject) {
     var returnData = [];
     for(i=0; i<responseData.petfinder.pets[0].pet.length; i++){
       var data = responseData.petfinder.pets[0].pet[i]
       if(data.status[0]==="A"){
         var newDog          = {};
+        newDog.userid       = checkID;
         newDog.name         = data.name[0];
         newDog.age          = data.age[0];
         newDog.sex          = data.sex[0];
@@ -18,7 +20,9 @@ function filterDogs(responseData) {
         }
     }
     resolve(returnData);
-  });
+  }).then(function(data){
+    return onlynewDogs(data)
+  })
 }
 
 
@@ -47,4 +51,36 @@ function filterReturnArray(responseData) {
 module.exports = {
   filter: filterDogs,
   format: filterReturnArray
+}
+
+function knexPromise(userID, petID){
+  return new Promise(resolve, reject){
+    resolve(crud.checkConnection);
+  }
+}
+
+function onlyNewDogs(dogArray){
+  return new Promise(function(resolve, reject){
+    var petfinderArray = [];
+    for(i=0; i<dogArray.length; i++){
+      petfinderArray.push([dogArray[i].petfinder_id, dogArray[i].userid]);
+    }
+    resolve(petfinderArray);
+  })
+  .then(function(petfinderArray){
+    var promiseStack = [];
+    for(i=0; i<petfinderArray.length; i++){
+      promiseStack.push(knexPromise(petfinderArray[i][1], petfinderArray[i][0]))
+    }
+    return Promise.all(promiseStack)
+  })
+  .then(function(data){
+    var newArray = [];
+    for(i=0; i<data.length; i++){
+      if(data[i]){
+        newArray.push(data[i]);
+      }
+    }
+  return newArray;
+  })
 }

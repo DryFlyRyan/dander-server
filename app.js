@@ -46,7 +46,8 @@ app.use('/auth', auth.router);
 app.get('/dogs', function(req, res) {
   // var returnObject;
   var zipcode = req.query.zipcode;
-  getRequestAPICall(zipcode)
+  var checkID = req.query.checkID;
+  getRequestAPICall(zipcode, checkID)
   .then(function(data) {
     // returnObject = data;
     console.log('API Calling');
@@ -69,11 +70,11 @@ app.use('/account', account);
 
 // API Call Functions
 
-function getRequestAPICall(zipcode) {
+function getRequestAPICall(zipcode, checkID) {
   return new Promise(function(resolve,reject){
     request(zipcode)
     .then(function(data) {
-      return filter.filter(data);
+      return filter.filter(data, checkID);
     })
     .then(function(data) {
       resolve(data);
