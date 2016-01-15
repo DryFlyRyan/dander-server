@@ -8,10 +8,10 @@ Below are the links to our other repos.
 
 * [Front End](https://github.com/DryFlyRyan/dander-frontend)
 
-* [Database](https://github.com/DryFlyRyan/dander-db
+* [Database](https://github.com/DryFlyRyan/dander-db)
 
 Thanks from everyone on the SuavaScript team.
 
-Derik Linch
-Ryan Douglas
-Zac Smith
+- Derik Linch
+- Ryan Douglas
+- Zac Smith
