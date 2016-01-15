@@ -16,14 +16,19 @@ function filterDogs(responseData, checkID) {
         newDog.petfinder_id = data.id[0];
         newDog.photo        = data.media[0].photos[0].photo[2]["_"];
         newDog.contact      = data.contact[0];
-        returnData.push(newDog)
+        returnData.push(newDog);
         }
     }
     resolve(returnData);
-  }).then(function(data){
-
-    if(data[0].userid){
-      return onlynewDogs(data)
+  })
+  .then(function(data){
+    return new Promise(function(resolve, reject){
+      if(data[0].userid){
+        return onlynewDogs(data)
+      } else {
+        return data;
+        }
+    })
   })
 }
 
@@ -57,7 +62,7 @@ module.exports = {
 
 function knexPromise(userID, petID){
   return new Promise(function(resolve, reject){
-    resolve(crud.checkConnection);
+    resolve(crud.checkConnection());
   })
 }
 
@@ -72,17 +77,19 @@ function onlyNewDogs(dogArray){
   .then(function(petfinderArray){
     var promiseStack = [];
     for(i=0; i<petfinderArray.length; i++){
-      promiseStack.push(knexPromise(petfinderArray[i][1], petfinderArray[i][0]))
+      promiseStack.push(crud.checkConnection(petfinderArray[i][1], petfinderArray[i][0]))
     }
     return Promise.all(promiseStack)
   })
   .then(function(data){
-    var newArray = [];
-    for(i=0; i<data.length; i++){
-      if(data[i]){
-        newArray.push(data[i]);
+    return new Promise(function(resolve, reject){
+      var newArray = [];
+      for(i=0; i<data.length; i++){
+        if(data[i].length>1){
+          newArray.push(data[i]);
+        }
       }
-    }
-  return newArray;
+      resolve(newArray);
+    })
   })
 }
